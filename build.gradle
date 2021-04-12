@@ -7,6 +7,17 @@ buildscript {
 		classpath("org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.16")
 	}
 }
+buildscript {
+	repositories {
+		maven {
+			url 'http://maven.aliyun.com/nexus/content/groups/public/'
+		}
+		maven {
+			url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'
+		}
+	}
+}
+
 
 // 3rd party plugin repositories can be configured in settings.gradle
 plugins {
@@ -318,3 +329,5 @@ def qualifyVersionIfNecessary(version) {
 	}
 	return version
 }
+
+
