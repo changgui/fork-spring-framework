@@ -15,6 +15,7 @@ public class PersonTest {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:chang/person.xml");
 		Person person = (Person) context.getBean("person");
 		System.out.println(person);
+		System.out.println("中文测试");
 	}
 
 }
