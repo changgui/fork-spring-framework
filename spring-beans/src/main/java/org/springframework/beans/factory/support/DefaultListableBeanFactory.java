@@ -870,12 +870,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						"Validation of bean definition failed", ex);
 			}
 		}
-
+		// 查询beanName是否已存在
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
+		// beanName已存在的情况
 		if (existingDefinition != null) {
+			// 不允许bean覆盖直接抛异常
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
+			// 允许bean覆盖的话打印一些日志
 			else if (existingDefinition.getRole() < beanDefinition.getRole()) {
 				// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE
 				if (logger.isInfoEnabled()) {
@@ -898,8 +901,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							"] with [" + beanDefinition + "]");
 				}
 			}
+			// 注册beanDefinition
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
+		// 一个新的bean情况下
 		else {
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
@@ -914,7 +919,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			else {
 				// Still in startup registration phase
+				// 注册beanDefinition
 				this.beanDefinitionMap.put(beanName, beanDefinition);
+				// 记录beanName
+				// 至于为什么上面用了map而这里再用一个list记录beanName是为了保证顺序
+				// beanDefinitionMap是一个ConcurrentHashMap，是无序的，而beanDefinitionNames是ArrayList是有序的
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
 			}

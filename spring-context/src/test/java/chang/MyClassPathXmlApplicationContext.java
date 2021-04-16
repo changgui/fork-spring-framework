@@ -1,6 +1,7 @@
 package chang;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -15,4 +16,12 @@ public class MyClassPathXmlApplicationContext extends ClassPathXmlApplicationCon
 	public MyClassPathXmlApplicationContext(String... configLocations) throws BeansException {
 		super(configLocations);
 	}
+
+	@Override
+	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// 扩展点
+		super.customizeBeanFactory(beanFactory);
+	}
+
+
 }
