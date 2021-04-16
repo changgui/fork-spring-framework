@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class PersonTest {
 
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:chang/person.xml");
+		MyClassPathXmlApplicationContext context = new MyClassPathXmlApplicationContext("classpath:chang/person.xml");
 		Person person = (Person) context.getBean("person");
 		System.out.println(person);
 		System.out.println("中文测试");
