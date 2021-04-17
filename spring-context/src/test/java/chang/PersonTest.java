@@ -1,6 +1,6 @@
 package chang;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import chang.diytag.Chang;
 
 /**
  * person测试
@@ -13,9 +13,14 @@ public class PersonTest {
 
 	public static void main(String[] args) {
 		MyClassPathXmlApplicationContext context = new MyClassPathXmlApplicationContext("classpath:chang/person.xml");
-		Person person = (Person) context.getBean("person");
+		Person person = (Person) context.getBean("person1");
 		System.out.println(person);
 		System.out.println("中文测试");
+
+
+
+		Chang chang = (Chang) context.getBean("diyChang");
+		System.out.println(chang);
 	}
 
 }

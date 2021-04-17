@@ -18,6 +18,11 @@ public class MyClassPathXmlApplicationContext extends ClassPathXmlApplicationCon
 	}
 
 	@Override
+	protected void initPropertySources() {
+		super.initPropertySources();
+	}
+
+	@Override
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		// 扩展点
 		super.customizeBeanFactory(beanFactory);

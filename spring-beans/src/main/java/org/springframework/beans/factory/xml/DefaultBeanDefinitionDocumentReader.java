@@ -145,7 +145,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 		// 前钩子 spring mvc扩展
  		preProcessXml(root);
+		// 实际解析操作
 		parseBeanDefinitions(root, this.delegate);
+		// 后钩子 spring mvc扩展
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -177,7 +179,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						parseDefaultElement(ele, delegate);
 					}
 					else {
-						// 解析其他的如 xmlns:context="http://www.springframework.org/schema/context"
+						// 解析其他的如 <tx: <context: <aop:
+						// 或者自定义的
 						delegate.parseCustomElement(ele);
 					}
 				}
