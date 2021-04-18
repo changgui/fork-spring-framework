@@ -1,6 +1,7 @@
 package chang;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -26,7 +27,12 @@ public class MyClassPathXmlApplicationContext extends ClassPathXmlApplicationCon
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		// 扩展点
 		super.customizeBeanFactory(beanFactory);
+		super.addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
 	}
 
-
+	@Override
+	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		super.postProcessBeanFactory(beanFactory);
+		//System.out.println("扩展实现postProcessBeanFactory");
+	}
 }

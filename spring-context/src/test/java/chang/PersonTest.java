@@ -1,7 +1,5 @@
 package chang;
 
-import chang.diytag.Chang;
-
 /**
  * person测试
  *
@@ -16,11 +14,6 @@ public class PersonTest {
 		Person person = (Person) context.getBean("person1");
 		System.out.println(person);
 		System.out.println("中文测试");
-
-
-
-		Chang chang = (Chang) context.getBean("diyChang");
-		System.out.println(chang);
 	}
 
 }

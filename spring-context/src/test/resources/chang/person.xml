@@ -23,5 +23,7 @@
 		<constructor-arg index="1" name="name" type="java.lang.String" value="李四"/>
 	</bean>
 
+<!--	<bean class="chang.MyBeanFactoryPostProcessor" />-->
+
 
 </beans>
