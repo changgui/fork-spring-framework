@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="customer" class="chang.diyeditor.Customer">
+		<property name="name" value="我的家乡"/>
+		<property name="address" value="湖北省_黄冈市_团风县"/>
+	</bean>
+
+	<!--方式1-->
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="propertyEditorRegistrars">
+			<list>
+				<bean class="chang.diyeditor.AddressPropertyEditorRegister"/>
+			</list>
+		</property>
+	</bean>
+
+	<!--方式2-->
+	<!--用此方法就不用AddressPropertyEditorRegister了-->
+<!--	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">-->
+<!--		<property name="customEditors">-->
+<!--			<map>-->
+<!--				<entry key="chang.diyeditor.Address" value="chang.diyeditor.AddressPropertyEditor"/>-->
+<!--			</map>-->
+<!--		</property>-->
+<!--	</bean>-->
+
+</beans>

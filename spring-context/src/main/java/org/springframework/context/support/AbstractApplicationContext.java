@@ -631,8 +631,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
+		// 设置类加载器
 		beanFactory.setBeanClassLoader(getClassLoader());
+		// 设置SPEL表达式解析器 #{...} 注意: ${...}是占位符, 在environment中初处理
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
+		// 只能加一个默认的propertyEditor, 主要是对bean的属性等级设置管理的一个工具类
+		// 主要做一些类自动解析的工作，比如日期格式转换，把yyyy-MM-dd转成一个Date类型
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.

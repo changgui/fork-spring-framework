@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:diy="http://www.changgui.com/schema/diy"
+	   xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.changgui.com/schema/diy
+	   http://www.changgui.com/schema/diy.xsd">
+
+	<diy:chang id="diyChang" name="guichang" age="30"/>
+
+</beans>
