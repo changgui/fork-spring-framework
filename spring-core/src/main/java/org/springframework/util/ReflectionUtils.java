@@ -16,18 +16,13 @@
 
 package org.springframework.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.UndeclaredThrowableException;
+import org.springframework.lang.Nullable;
+
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.lang.Nullable;
 
 /**
  * Simple utility class for working with the reflection API and handling
@@ -196,12 +191,10 @@ public abstract class ReflectionUtils {
 	 */
 	@SuppressWarnings("deprecation")  // on JDK 9
 	public static void makeAccessible(Constructor<?> ctor) {
-		if ((!Modifier.isPublic(ctor.getModifiers()) ||
-				!Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) && !ctor.isAccessible()) {
+		if ((!Modifier.isPublic(ctor.getModifiers()) || !Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) && !ctor.isAccessible()) {
 			ctor.setAccessible(true);
 		}
 	}
-
 
 	// Method handling
 

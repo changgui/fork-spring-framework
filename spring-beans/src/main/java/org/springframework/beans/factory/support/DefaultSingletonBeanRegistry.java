@@ -167,8 +167,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Assert.notNull(singletonFactory, "Singleton factory must not be null");
 		synchronized (this.singletonObjects) {
 			if (!this.singletonObjects.containsKey(beanName)) {
+				// 加入三级缓存
 				this.singletonFactories.put(beanName, singletonFactory);
+				// 删除二级缓存
 				this.earlySingletonObjects.remove(beanName);
+				// 添加到已注册列表
 				this.registeredSingletons.add(beanName);
 			}
 		}
@@ -240,6 +243,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 上一步的 createBean
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				} catch (IllegalStateException ex) {

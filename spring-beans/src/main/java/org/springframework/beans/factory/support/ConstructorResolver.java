@@ -51,8 +51,7 @@ class ConstructorResolver {
 
 	private static final Object[] EMPTY_ARGS = new Object[0];
 
-	private static final NamedThreadLocal<InjectionPoint> currentInjectionPoint =
-			new NamedThreadLocal<>("Current injection point");
+	private static final NamedThreadLocal<InjectionPoint> currentInjectionPoint = new NamedThreadLocal<>("Current injection point");
 
 	private final AbstractAutowireCapableBeanFactory beanFactory;
 
@@ -85,12 +84,9 @@ class ConstructorResolver {
 	 *                     or {@code null} if none (-> use constructor argument values from bean definition)
 	 * @return a BeanWrapper for the new instance
 	 */
-	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
-										   @Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
-
+	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd, @Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
-
 		Constructor<?> constructorToUse = null;
 		ArgumentsHolder argsHolderToUse = null;
 		Object[] argsToUse = null;
@@ -123,12 +119,11 @@ class ConstructorResolver {
 					candidates = (mbd.isNonPublicAccessAllowed() ?
 							beanClass.getDeclaredConstructors() : beanClass.getConstructors());
 				} catch (Throwable ex) {
-					throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-							"Resolution of declared constructors on bean Class [" + beanClass.getName() +
-									"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
+					throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Resolution of declared constructors on bean Class [" + beanClass.getName() + "] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 				}
 			}
 
+			// 只有一个构造方法就直接返回了
 			if (candidates.length == 1 && explicitArgs == null && !mbd.hasConstructorArgumentValues()) {
 				Constructor<?> uniqueCandidate = candidates[0];
 				if (uniqueCandidate.getParameterCount() == 0) {
@@ -143,8 +138,7 @@ class ConstructorResolver {
 			}
 
 			// Need to resolve the constructor.
-			boolean autowiring = (chosenCtors != null ||
-					mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
+			boolean autowiring = (chosenCtors != null || mbd.getResolvedAutowireMode() == AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 			ConstructorArgumentValues resolvedValues = null;
 
 			int minNrOfArgs;
@@ -153,22 +147,24 @@ class ConstructorResolver {
 			} else {
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 				resolvedValues = new ConstructorArgumentValues();
+				// 能解析到的参数个数
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
-
+			// 对候选的构造函数进行排序，先是访问权限后是参数个数
 			AutowireUtils.sortConstructors(candidates);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
 			Set<Constructor<?>> ambiguousConstructors = null;
 			LinkedList<UnsatisfiedDependencyException> causes = null;
-
+			// 循环候选的构造函数
 			for (Constructor<?> candidate : candidates) {
 				Class<?>[] paramTypes = candidate.getParameterTypes();
-
+				// 如果已经找到选用的构造函数或者需要的参数个数小于当前的构造函数个数则终止，因为前面已经经过了排序操作
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > paramTypes.length) {
 					// Already found greedy constructor that can be satisfied ->
 					// do not look any further, there are only less greedy constructors left.
 					break;
 				}
+				// 如果本构造函数的参数列表数量小于要求的最小数量，则遍历下一个
 				if (paramTypes.length < minNrOfArgs) {
 					continue;
 				}
@@ -183,8 +179,7 @@ class ConstructorResolver {
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
-						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
-								getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
+						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames, getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
 					} catch (UnsatisfiedDependencyException ex) {
 						if (logger.isTraceEnabled()) {
 							logger.trace("Ignoring constructor [" + candidate + "] of bean '" + beanName + "': " + ex);
@@ -204,8 +199,7 @@ class ConstructorResolver {
 					argsHolder = new ArgumentsHolder(explicitArgs);
 				}
 
-				int typeDiffWeight = (mbd.isLenientConstructorResolution() ?
-						argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
+				int typeDiffWeight = (mbd.isLenientConstructorResolution() ? argsHolder.getTypeDifferenceWeight(paramTypes) : argsHolder.getAssignabilityWeight(paramTypes));
 				// Choose this constructor if it represents the closest match.
 				if (typeDiffWeight < minTypeDiffWeight) {
 					constructorToUse = candidate;
@@ -230,17 +224,13 @@ class ConstructorResolver {
 					}
 					throw ex;
 				}
-				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-						"Could not resolve matching constructor " +
-								"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
+				throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Could not resolve matching constructor " + "(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
 			} else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
-				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-						"Ambiguous constructor matches found in bean '" + beanName + "' " +
-								"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities): " +
-								ambiguousConstructors);
+				throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Ambiguous constructor matches found in bean '" + beanName + "' " + "(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities): " + ambiguousConstructors);
 			}
 
 			if (explicitArgs == null && argsHolderToUse != null) {
+				// 将解析的构造器加入缓存
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}
 		}
@@ -250,21 +240,16 @@ class ConstructorResolver {
 		return bw;
 	}
 
-	private Object instantiate(
-			String beanName, RootBeanDefinition mbd, Constructor<?> constructorToUse, Object[] argsToUse) {
-
+	private Object instantiate(String beanName, RootBeanDefinition mbd, Constructor<?> constructorToUse, Object[] argsToUse) {
 		try {
 			InstantiationStrategy strategy = this.beanFactory.getInstantiationStrategy();
 			if (System.getSecurityManager() != null) {
-				return AccessController.doPrivileged((PrivilegedAction<Object>) () ->
-								strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse),
-						this.beanFactory.getAccessControlContext());
+				return AccessController.doPrivileged((PrivilegedAction<Object>) () -> strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse), this.beanFactory.getAccessControlContext());
 			} else {
 				return strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse);
 			}
 		} catch (Throwable ex) {
-			throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-					"Bean instantiation via constructor failed", ex);
+			throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Bean instantiation via constructor failed", ex);
 		}
 	}
 
@@ -335,12 +320,16 @@ class ConstructorResolver {
 	 * @return a BeanWrapper for the new instance
 	 */
 	public BeanWrapper instantiateUsingFactoryMethod(String beanName, RootBeanDefinition mbd, @Nullable Object[] explicitArgs) {
-
+		// 创建包装类
 		BeanWrapperImpl bw = new BeanWrapperImpl();
+		// 初始化包装类
 		this.beanFactory.initBeanWrapper(bw);
 
+		// 工场实例
 		Object factoryBean;
+		// 工厂类型
 		Class<?> factoryClass;
+		// 是否静态
 		boolean isStatic;
 
 		String factoryBeanName = mbd.getFactoryBeanName();
@@ -357,7 +346,7 @@ class ConstructorResolver {
 		} else {
 			// It's a static factory method on the bean class.
 			if (!mbd.hasBeanClass()) {
-				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName,"bean definition declares neither a bean class nor a factory-bean reference");
+				throw new BeanDefinitionStoreException(mbd.getResourceDescription(), beanName, "bean definition declares neither a bean class nor a factory-bean reference");
 			}
 			factoryBean = null;
 			factoryClass = mbd.getBeanClass();
