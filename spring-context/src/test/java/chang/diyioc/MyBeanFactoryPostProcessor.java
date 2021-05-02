@@ -1,4 +1,4 @@
-package chang;
+package chang.diyioc;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;

@@ -1,6 +1,6 @@
 package chang.diytag;
 
-import chang.MyClassPathXmlApplicationContext;
+import chang.diyioc.MyClassPathXmlApplicationContext;
 
 /**
  * person测试

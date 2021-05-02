@@ -1,9 +1,9 @@
-package chang;
+package chang.diyioc;
 
 public class Person {
 
-    private Integer id;
-    private String name;
+	private Integer id;
+	private String name;
 
 	public Person() {
 	}
@@ -31,9 +31,6 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return "Person{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
+		return "Person{" + "id=" + id + ", name='" + name + '\'' + '}';
 	}
 }

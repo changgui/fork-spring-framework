@@ -1,6 +1,6 @@
 package chang.diyeditor;
 
-import chang.MyClassPathXmlApplicationContext;
+import chang.diyioc.MyClassPathXmlApplicationContext;
 
 /**
  * person测试

@@ -200,10 +200,14 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 			synchronized (this.singletonObjects) {
 				singletonObject = this.earlySingletonObjects.get(beanName);
 				if (singletonObject == null && allowEarlyReference) {
+					// 从三级缓存中找到lambda
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
+						// 调用三级缓存的lambda表达式创建对象
 						singletonObject = singletonFactory.getObject();
+						// 放入二级缓存
 						this.earlySingletonObjects.put(beanName, singletonObject);
+						// 从三级缓存中移除
 						this.singletonFactories.remove(beanName);
 					}
 				}
@@ -267,6 +271,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 加入一级缓存
 					addSingleton(beanName, singletonObject);
 				}
 			}

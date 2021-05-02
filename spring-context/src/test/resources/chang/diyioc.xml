@@ -13,19 +13,19 @@
 
 	<context:component-scan base-package="chang.*"/>
 
-	<bean id="person1" class="chang.Person">
+	<bean id="person1" class="chang.diyioc.Person">
 		<description>测试的person对象</description>
 		<meta key="key1" value="name1"/>
 		<property name="id" value="1"/>
 		<property name="name" value="张三"/>
 	</bean>
 
-	<bean id="person2" class="chang.Person">
+	<bean id="person2" class="chang.diyioc.Person">
 		<constructor-arg index="0" name="id" type="java.lang.Integer" value="2"/>
 		<constructor-arg index="1" name="name" type="java.lang.String" value="李四"/>
 	</bean>
 
-	<!--	<bean class="chang.MyBeanFactoryPostProcessor" />-->
+	<!--	<bean class="chang.diyioc.MyBeanFactoryPostProcessor" />-->
 
 
 
