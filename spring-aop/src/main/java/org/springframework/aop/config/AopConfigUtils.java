@@ -109,11 +109,8 @@ public abstract class AopConfigUtils {
 	}
 
 	@Nullable
-	private static BeanDefinition registerOrEscalateApcAsRequired(
-			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
-
+	private static BeanDefinition registerOrEscalateApcAsRequired(Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
-
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {

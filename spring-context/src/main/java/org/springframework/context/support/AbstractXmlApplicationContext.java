@@ -82,7 +82,6 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
 		// 初始化xml解析类
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
-
 		// Configure the bean definition reader with this context's
 		// resource loading environment.
 		// 设置环境属性
@@ -90,7 +89,6 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		beanDefinitionReader.setResourceLoader(this);
 		// 设置xml实体解析器（dtd、sax）
 		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
-
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
 		// 设置是否验证xml格式，默认true，可重写
