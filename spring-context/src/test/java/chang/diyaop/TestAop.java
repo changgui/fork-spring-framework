@@ -9,7 +9,7 @@ public class TestAop {
 		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("classpath:chang/diyaop.xml");
         MyCalculator bean = ac.getBean(MyCalculator.class);
         bean.add(1,1);
-        bean.sub(1,1);
+        //bean.sub(1,1);
     }
 
     //public static void saveGeneratedCGlibProxyFiles(String dir) throws Exception {
