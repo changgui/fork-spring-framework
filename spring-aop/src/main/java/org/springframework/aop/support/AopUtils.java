@@ -344,9 +344,7 @@ public abstract class AopUtils {
 	 * @throws org.springframework.aop.AopInvocationException in case of a reflection error
 	 */
 	@Nullable
-	public static Object invokeJoinpointUsingReflection(@Nullable Object target, Method method, Object[] args)
-			throws Throwable {
-
+	public static Object invokeJoinpointUsingReflection(@Nullable Object target, Method method, Object[] args) throws Throwable {
 		// Use reflection to invoke the method.
 		try {
 			ReflectionUtils.makeAccessible(method);

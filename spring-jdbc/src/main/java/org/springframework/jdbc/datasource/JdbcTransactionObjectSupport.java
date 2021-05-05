@@ -16,21 +16,15 @@
 
 package org.springframework.jdbc.datasource;
 
-import java.sql.SQLException;
-import java.sql.Savepoint;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.lang.Nullable;
-import org.springframework.transaction.CannotCreateTransactionException;
-import org.springframework.transaction.NestedTransactionNotSupportedException;
-import org.springframework.transaction.SavepointManager;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.TransactionUsageException;
+import org.springframework.transaction.*;
 import org.springframework.transaction.support.SmartTransactionObject;
 import org.springframework.util.Assert;
+
+import java.sql.SQLException;
+import java.sql.Savepoint;
 
 /**
  * Convenient base class for JDBC-aware transaction objects. Can contain a
@@ -43,8 +37,8 @@ import org.springframework.util.Assert;
  * implement the {@link SavepointManager} interface.
  *
  * @author Juergen Hoeller
- * @since 1.1
  * @see DataSourceTransactionManager
+ * @since 1.1
  */
 public abstract class JdbcTransactionObjectSupport implements SavepointManager, SmartTransactionObject {
 
@@ -102,6 +96,7 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 
 	/**
 	 * This implementation creates a JDBC 3.0 Savepoint and returns it.
+	 *
 	 * @see java.sql.Connection#setSavepoint
 	 */
 	@Override
@@ -109,22 +104,20 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 		ConnectionHolder conHolder = getConnectionHolderForSavepoint();
 		try {
 			if (!conHolder.supportsSavepoints()) {
-				throw new NestedTransactionNotSupportedException(
-						"Cannot create a nested transaction because savepoints are not supported by your JDBC driver");
+				throw new NestedTransactionNotSupportedException("Cannot create a nested transaction because savepoints are not supported by your JDBC driver");
 			}
 			if (conHolder.isRollbackOnly()) {
-				throw new CannotCreateTransactionException(
-						"Cannot create savepoint for transaction which is already marked as rollback-only");
+				throw new CannotCreateTransactionException("Cannot create savepoint for transaction which is already marked as rollback-only");
 			}
 			return conHolder.createSavepoint();
-		}
-		catch (SQLException ex) {
+		} catch (SQLException ex) {
 			throw new CannotCreateTransactionException("Could not create JDBC savepoint", ex);
 		}
 	}
 
 	/**
 	 * This implementation rolls back to the given JDBC 3.0 Savepoint.
+	 *
 	 * @see java.sql.Connection#rollback(java.sql.Savepoint)
 	 */
 	@Override
@@ -133,14 +126,14 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 		try {
 			conHolder.getConnection().rollback((Savepoint) savepoint);
 			conHolder.resetRollbackOnly();
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 			throw new TransactionSystemException("Could not roll back to JDBC savepoint", ex);
 		}
 	}
 
 	/**
 	 * This implementation releases the given JDBC 3.0 Savepoint.
+	 *
 	 * @see java.sql.Connection#releaseSavepoint
 	 */
 	@Override
@@ -148,8 +141,7 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 		ConnectionHolder conHolder = getConnectionHolderForSavepoint();
 		try {
 			conHolder.getConnection().releaseSavepoint((Savepoint) savepoint);
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 			logger.debug("Could not explicitly release JDBC savepoint", ex);
 		}
 	}

@@ -544,7 +544,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			// Tell the subclass to refresh the internal bean factory.
 			// 1、创建容器对象：DefaultListableBeanFactory
-			// 2、加载xml配置文件的属性值到当前工厂中，最重要的就是BeanDefinition
+			// 2、解析bean标签(parseDefaultElement)和其他标签(parseCustomElement)
+			// 3、加载xml配置文件的属性值到当前工厂中，最重要的就是BeanDefinition
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -559,10 +560,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Invoke factory processors registered as beans in the context.
 				// 调用BFPP
 				// 关注ConfigurationClassPostProcessor，是对注解的解析
+				// bd的属性值替换，如${jdbc.username}替换为具体的用户名
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
 				// 注册BPP，只是注册，处理在getBean()
+				// AOP或事务需要加一个AspectJAwareAdvisorAutoProxyCreator
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.

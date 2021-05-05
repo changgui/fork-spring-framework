@@ -16,24 +16,19 @@
 
 package org.springframework.transaction.config;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.w3c.dom.Element;
-
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
-import org.springframework.transaction.interceptor.NoRollbackRuleAttribute;
-import org.springframework.transaction.interceptor.RollbackRuleAttribute;
-import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
+import org.springframework.transaction.interceptor.*;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Element;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser
@@ -73,30 +68,26 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		// 获取属性transaction-manager
 		builder.addPropertyReference("transactionManager", TxNamespaceHandler.getTransactionManagerName(element));
-
+		// 获取attributes列表
 		List<Element> txAttributes = DomUtils.getChildElementsByTagName(element, ATTRIBUTES_ELEMENT);
 		if (txAttributes.size() > 1) {
-			parserContext.getReaderContext().error(
-					"Element <attributes> is allowed at most once inside element <advice>", element);
-		}
-		else if (txAttributes.size() == 1) {
+			parserContext.getReaderContext().error("Element <attributes> is allowed at most once inside element <advice>", element);
+		} else if (txAttributes.size() == 1) {
 			// Using attributes source.
 			Element attributeSourceElement = txAttributes.get(0);
 			RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement, parserContext);
 			builder.addPropertyValue("transactionAttributeSource", attributeSourceDefinition);
-		}
-		else {
+		} else {
 			// Assume annotations source.
-			builder.addPropertyValue("transactionAttributeSource",
-					new RootBeanDefinition("org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"));
+			builder.addPropertyValue("transactionAttributeSource", new RootBeanDefinition("org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"));
 		}
 	}
 
 	private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext) {
 		List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT);
-		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap =
-				new ManagedMap<>(methods.size());
+		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap = new ManagedMap<>(methods.size());
 		transactionAttributeMap.setSource(parserContext.extractSource(attrEle));
 
 		for (Element methodEle : methods) {
@@ -104,10 +95,15 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 			TypedStringValue nameHolder = new TypedStringValue(name);
 			nameHolder.setSource(parserContext.extractSource(methodEle));
 
+			// 获取<tx:method 里的属性，如propagation，如果未设置则会拿到默认值 propagation=REQUIRED
 			RuleBasedTransactionAttribute attribute = new RuleBasedTransactionAttribute();
+			// 传播特性
 			String propagation = methodEle.getAttribute(PROPAGATION_ATTRIBUTE);
+			// 隔离级别
 			String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE);
+			// 超时时间
 			String timeout = methodEle.getAttribute(TIMEOUT_ATTRIBUTE);
+			// 是否只读
 			String readOnly = methodEle.getAttribute(READ_ONLY_ATTRIBUTE);
 			if (StringUtils.hasText(propagation)) {
 				attribute.setPropagationBehaviorName(RuleBasedTransactionAttribute.PREFIX_PROPAGATION + propagation);
@@ -118,29 +114,29 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 			if (StringUtils.hasText(timeout)) {
 				try {
 					attribute.setTimeout(Integer.parseInt(timeout));
-				}
-				catch (NumberFormatException ex) {
+				} catch (NumberFormatException ex) {
 					parserContext.getReaderContext().error("Timeout must be an integer value: [" + timeout + "]", methodEle);
 				}
 			}
 			if (StringUtils.hasText(readOnly)) {
-				attribute.setReadOnly(Boolean.valueOf(methodEle.getAttribute(READ_ONLY_ATTRIBUTE)));
+				attribute.setReadOnly(Boolean.parseBoolean(methodEle.getAttribute(READ_ONLY_ATTRIBUTE)));
 			}
-
+			// 读取rollback-for
 			List<RollbackRuleAttribute> rollbackRules = new LinkedList<>();
 			if (methodEle.hasAttribute(ROLLBACK_FOR_ATTRIBUTE)) {
 				String rollbackForValue = methodEle.getAttribute(ROLLBACK_FOR_ATTRIBUTE);
-				addRollbackRuleAttributesTo(rollbackRules,rollbackForValue);
+				addRollbackRuleAttributesTo(rollbackRules, rollbackForValue);
 			}
+			// 读取no-rollback-for
 			if (methodEle.hasAttribute(NO_ROLLBACK_FOR_ATTRIBUTE)) {
 				String noRollbackForValue = methodEle.getAttribute(NO_ROLLBACK_FOR_ATTRIBUTE);
-				addNoRollbackRuleAttributesTo(rollbackRules,noRollbackForValue);
+				addNoRollbackRuleAttributesTo(rollbackRules, noRollbackForValue);
 			}
 			attribute.setRollbackRules(rollbackRules);
 
 			transactionAttributeMap.put(nameHolder, attribute);
 		}
-
+		// 新建一个基于NameMatchTransactionAttributeSource的bd
 		RootBeanDefinition attributeSourceDefinition = new RootBeanDefinition(NameMatchTransactionAttributeSource.class);
 		attributeSourceDefinition.setSource(parserContext.extractSource(attrEle));
 		attributeSourceDefinition.getPropertyValues().add("nameMap", transactionAttributeMap);
