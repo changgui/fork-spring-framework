@@ -131,8 +131,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		synchronized (this.singletonObjects) {
 			Object oldObject = this.singletonObjects.get(beanName);
 			if (oldObject != null) {
-				throw new IllegalStateException("Could not register object [" + singletonObject +
-						"] under bean name '" + beanName + "': there is already object [" + oldObject + "] bound");
+				throw new IllegalStateException("Could not register object [" + singletonObject + "] under bean name '" + beanName + "': there is already object [" + oldObject + "] bound");
 			}
 			addSingleton(beanName, singletonObject);
 		}
@@ -196,12 +195,16 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// 从单例缓存中查找
 		Object singletonObject = this.singletonObjects.get(beanName);
+		// 一级缓存中没有且正在创建中
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
+				// 从二级缓存中拿
 				singletonObject = this.earlySingletonObjects.get(beanName);
+				// 二级缓存中没有且allowEarlyReference==true
 				if (singletonObject == null && allowEarlyReference) {
 					// 从三级缓存中找到lambda
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
+					// 三级缓存中找到了
 					if (singletonFactory != null) {
 						// 调用三级缓存的lambda表达式创建对象
 						singletonObject = singletonFactory.getObject();
@@ -213,6 +216,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 			}
 		}
+		// 有对象直接返回
 		return singletonObject;
 	}
 

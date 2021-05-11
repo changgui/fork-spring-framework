@@ -155,8 +155,7 @@ class ConfigurationClassParser {
 			} catch (BeanDefinitionStoreException ex) {
 				throw ex;
 			} catch (Throwable ex) {
-				throw new BeanDefinitionStoreException(
-						"Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
+				throw new BeanDefinitionStoreException("Failed to parse configuration class [" + bd.getBeanClassName() + "]", ex);
 			}
 		}
 
@@ -237,7 +236,6 @@ class ConfigurationClassParser {
 	 */
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
-
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass);
@@ -636,15 +634,12 @@ class ConfigurationClassParser {
 		if (className.startsWith("java")) {
 			// Never use ASM for core java types
 			try {
-				return new SourceClass(ClassUtils.forName(className,
-						this.resourceLoader.getClassLoader()));
+				return new SourceClass(ClassUtils.forName(className, this.resourceLoader.getClassLoader()));
 			} catch (ClassNotFoundException ex) {
-				throw new NestedIOException(
-						"Failed to load class [" + className + "]", ex);
+				throw new NestedIOException("Failed to load class [" + className + "]", ex);
 			}
 		}
-		return new SourceClass(
-				this.metadataReaderFactory.getMetadataReader(className));
+		return new SourceClass(this.metadataReaderFactory.getMetadataReader(className));
 	}
 
 

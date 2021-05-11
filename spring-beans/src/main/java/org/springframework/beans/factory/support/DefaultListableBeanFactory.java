@@ -498,8 +498,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				try {
 					RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 					// Only check bean definition if it is complete.
-					if (!mbd.isAbstract() &&
-							(allowEagerInit || (mbd.hasBeanClass() || !mbd.isLazyInit() || isAllowEagerClassLoading()) && !requiresEagerInitForType(mbd.getFactoryBeanName()))) {
+					if (!mbd.isAbstract() && (allowEagerInit || (mbd.hasBeanClass() || !mbd.isLazyInit() || isAllowEagerClassLoading()) && !requiresEagerInitForType(mbd.getFactoryBeanName()))) {
 						// In case of FactoryBean, match object created by FactoryBean.
 						boolean isFactoryBean = isFactoryBean(beanName, mbd);
 						BeanDefinitionHolder dbd = mbd.getDecoratedDefinition();
@@ -703,8 +702,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		Assert.notNull(dependencyType, "Dependency type must not be null");
 		if (autowiredValue != null) {
 			if (!(autowiredValue instanceof ObjectFactory || dependencyType.isInstance(autowiredValue))) {
-				throw new IllegalArgumentException("Value [" + autowiredValue +
-						"] does not implement specified dependency type [" + dependencyType.getName() + "]");
+				throw new IllegalArgumentException("Value [" + autowiredValue + "] does not implement specified dependency type [" + dependencyType.getName() + "]");
 			}
 			this.resolvableDependencies.put(dependencyType, autowiredValue);
 		}
@@ -829,7 +827,6 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		// While this may not be part of the regular factory bootstrap, it does otherwise work fine.
 		// 复制一份beanDefinitionNames
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
-
 		// Trigger initialization of all non-lazy singleton beans...
 		// 遍历触发非延迟加载的单例bean实例化
 		for (String beanName : beanNames) {
@@ -845,6 +842,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						final FactoryBean<?> factory = (FactoryBean<?>) bean;
 						boolean isEagerInit;
 						if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
+							// 内部使用的SmartFactoryBean接口，重写isEagerInit方法返回是否需要立即生成实例
 							isEagerInit = AccessController.doPrivileged((PrivilegedAction<Boolean>) ((SmartFactoryBean<?>) factory)::isEagerInit, getAccessControlContext());
 						} else {
 							isEagerInit = (factory instanceof SmartFactoryBean && ((SmartFactoryBean<?>) factory).isEagerInit());

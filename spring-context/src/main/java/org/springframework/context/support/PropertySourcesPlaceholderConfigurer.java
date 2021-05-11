@@ -16,24 +16,18 @@
 
 package org.springframework.context.support;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PlaceholderConfigurerSupport;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.core.env.ConfigurablePropertyResolver;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.PropertySource;
-import org.springframework.core.env.PropertySources;
-import org.springframework.core.env.PropertySourcesPropertyResolver;
+import org.springframework.core.env.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringValueResolver;
+
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Specialization of {@link PlaceholderConfigurerSupport} that resolves ${...} placeholders
@@ -140,8 +134,7 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 				);
 			}
 			try {
-				PropertySource<?> localPropertySource =
-						new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties());
+				PropertySource<?> localPropertySource = new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, mergeProperties());
 				if (this.localOverride) {
 					this.propertySources.addFirst(localPropertySource);
 				}
@@ -162,9 +155,7 @@ public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerS
 	 * Visit each bean definition in the given bean factory and attempt to replace ${...} property
 	 * placeholders with values from the given properties.
 	 */
-	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
-			final ConfigurablePropertyResolver propertyResolver) throws BeansException {
-
+	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, final ConfigurablePropertyResolver propertyResolver) throws BeansException {
 		propertyResolver.setPlaceholderPrefix(this.placeholderPrefix);
 		propertyResolver.setPlaceholderSuffix(this.placeholderSuffix);
 		propertyResolver.setValueSeparator(this.valueSeparator);

@@ -116,8 +116,7 @@ class ConstructorResolver {
 			if (candidates == null) {
 				Class<?> beanClass = mbd.getBeanClass();
 				try {
-					candidates = (mbd.isNonPublicAccessAllowed() ?
-							beanClass.getDeclaredConstructors() : beanClass.getConstructors());
+					candidates = (mbd.isNonPublicAccessAllowed() ? beanClass.getDeclaredConstructors() : beanClass.getConstructors());
 				} catch (Throwable ex) {
 					throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Resolution of declared constructors on bean Class [" + beanClass.getName() + "] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 				}

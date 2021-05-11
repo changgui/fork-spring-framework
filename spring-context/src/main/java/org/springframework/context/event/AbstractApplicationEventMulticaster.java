@@ -16,14 +16,6 @@
 
 package org.springframework.context.event;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
@@ -38,6 +30,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract implementation of the {@link ApplicationEventMulticaster} interface,
@@ -59,8 +54,7 @@ import org.springframework.util.ObjectUtils;
  * @see #getApplicationListeners(ApplicationEvent, ResolvableType)
  * @see SimpleApplicationEventMulticaster
  */
-public abstract class AbstractApplicationEventMulticaster
-		implements ApplicationEventMulticaster, BeanClassLoaderAware, BeanFactoryAware {
+public abstract class AbstractApplicationEventMulticaster implements ApplicationEventMulticaster, BeanClassLoaderAware, BeanFactoryAware {
 
 	private final ListenerRetriever defaultRetriever = new ListenerRetriever(false);
 

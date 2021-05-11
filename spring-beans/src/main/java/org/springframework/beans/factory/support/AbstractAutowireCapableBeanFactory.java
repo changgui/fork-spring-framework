@@ -250,8 +250,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	public void copyConfigurationFrom(ConfigurableBeanFactory otherFactory) {
 		super.copyConfigurationFrom(otherFactory);
 		if (otherFactory instanceof AbstractAutowireCapableBeanFactory) {
-			AbstractAutowireCapableBeanFactory otherAutowireFactory =
-					(AbstractAutowireCapableBeanFactory) otherFactory;
+			AbstractAutowireCapableBeanFactory otherAutowireFactory = (AbstractAutowireCapableBeanFactory) otherFactory;
 			this.instantiationStrategy = otherAutowireFactory.instantiationStrategy;
 			this.allowCircularReferences = otherAutowireFactory.allowCircularReferences;
 			this.ignoredDependencyTypes.addAll(otherAutowireFactory.ignoredDependencyTypes);
@@ -463,7 +462,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		try {
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
-			// 实现InstantiationAwareBeanPostProcessor自己实现代理类的生成
+			// 实现InstantiationAwareBeanPostProcessor的接口代理类的生成
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
@@ -505,12 +504,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args) throws BeanCreationException {
 		// Instantiate the bean.
+		// 主要实现了一个TypeConverter接口，可用作转换器
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
 			// 根据执行bean使用对应的策略创建新的实例
+			// 选择最合适的构造器来反射生成实例化对象
+			// 此步骤完成后bean对象已创建完成，但里面的属性都是默认值，后续需要对属性值进行初始化
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		// 从wrapper中获取原始bean
@@ -1421,6 +1423,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			// 具体的属性值设置
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}

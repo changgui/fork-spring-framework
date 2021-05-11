@@ -124,8 +124,7 @@ public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 				readerContext.getEnvironment(), readerContext.getResourceLoader());
 	}
 
-	protected void registerComponents(
-			XmlReaderContext readerContext, Set<BeanDefinitionHolder> beanDefinitions, Element element) {
+	protected void registerComponents(XmlReaderContext readerContext, Set<BeanDefinitionHolder> beanDefinitions, Element element) {
 
 		Object source = readerContext.extractSource(element);
 		CompositeComponentDefinition compositeDef = new CompositeComponentDefinition(element.getTagName(), source);

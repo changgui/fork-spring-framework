@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-	<bean id="logUtil" class="chang.diyaop.LogUtil"/>
+	<bean id="logUtil" class="chang.diyaop.LogUtil" init-method=""/>
 	<bean id="myCalculator" class="chang.diyaop.MyCalculator"/>
 
 	<aop:config>

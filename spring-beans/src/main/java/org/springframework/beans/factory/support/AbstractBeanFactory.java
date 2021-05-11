@@ -286,7 +286,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// 简单检查
 				checkMergedBeanDefinition(mbd, beanName, args);
 				// Guarantee initialization of beans that the current bean depends on.
-				// 是否有依赖关系，被依赖的对象需要提前创建
+				// 是否有依赖关系，被依赖的对象需要提前创建，xml中的depends-on=""属性
 				String[] dependsOn = mbd.getDependsOn();
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
@@ -1621,6 +1621,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
 		if (!(beanInstance instanceof FactoryBean) || BeanFactoryUtils.isFactoryDereference(name)) {
+			// 不是FactoryBean或者以&开头则直接返回原始对象
 			return beanInstance;
 		}
 
@@ -1665,8 +1666,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	protected boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
 		return (bean.getClass() != NullBean.class &&
-				(DisposableBeanAdapter.hasDestroyMethod(bean, mbd) || (hasDestructionAwareBeanPostProcessors() &&
-						DisposableBeanAdapter.hasApplicableProcessors(bean, getBeanPostProcessors()))));
+				(
+						DisposableBeanAdapter.hasDestroyMethod(bean, mbd)
+						|| (hasDestructionAwareBeanPostProcessors() && DisposableBeanAdapter.hasApplicableProcessors(bean, getBeanPostProcessors()))
+				)
+		);
 	}
 
 	/**

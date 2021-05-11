@@ -15,10 +15,10 @@ public class MyTest {
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:chang/diyfactorybean.xml");
 		// 此对象在 factoryBeanObjectCache 中存储
-		String myBeanDescr = context.getBean("myBeanDescr", String.class);
 		FactoryBean myBeanDescrFactoryBean = context.getBean("&myBeanDescr", FactoryBean.class);
-		System.out.println(myBeanDescr);
 		System.out.println(myBeanDescrFactoryBean);
+		MyFactoryBeanObject myBeanDescr = context.getBean("myBeanDescr", MyFactoryBeanObject.class);
+		System.out.println(myBeanDescr);
 	}
 
 }

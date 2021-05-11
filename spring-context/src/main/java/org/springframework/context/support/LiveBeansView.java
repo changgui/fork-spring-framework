@@ -16,14 +16,6 @@
 
 package org.springframework.context.support;
 
-import java.lang.management.ManagementFactory;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -34,6 +26,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Adapter for live beans view exposure, building a snapshot of current beans
@@ -46,9 +46,9 @@ import org.springframework.util.StringUtils;
  *
  * @author Juergen Hoeller
  * @author Stephane Nicoll
- * @since 3.2
  * @see #getSnapshotAsJson()
  * @see org.springframework.web.context.support.LiveBeansViewServlet
+ * @since 3.2
  */
 public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAware {
 
@@ -76,10 +76,8 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 					try {
 						MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 						applicationName = applicationContext.getApplicationName();
-						server.registerMBean(new LiveBeansView(),
-								new ObjectName(mbeanDomain, MBEAN_APPLICATION_KEY, applicationName));
-					}
-					catch (Throwable ex) {
+						server.registerMBean(new LiveBeansView(), new ObjectName(mbeanDomain, MBEAN_APPLICATION_KEY, applicationName));
+					} catch (Throwable ex) {
 						throw new ApplicationContextException("Failed to register LiveBeansView MBean", ex);
 					}
 				}
@@ -97,11 +95,9 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 					if (mbeanDomain != null) {
 						server.unregisterMBean(new ObjectName(mbeanDomain, MBEAN_APPLICATION_KEY, applicationName));
 					}
-				}
-				catch (Throwable ex) {
+				} catch (Throwable ex) {
 					throw new ApplicationContextException("Failed to unregister LiveBeansView MBean", ex);
-				}
-				finally {
+				} finally {
 					applicationName = null;
 				}
 			}
@@ -131,8 +127,7 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 		Set<ConfigurableApplicationContext> contexts;
 		if (this.applicationContext != null) {
 			contexts = Collections.singleton(this.applicationContext);
-		}
-		else {
+		} else {
 			contexts = findApplicationContexts();
 		}
 		return generateJson(contexts);
@@ -141,6 +136,7 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 	/**
 	 * Find all applicable ApplicationContexts for the current application.
 	 * <p>Called if no specific ApplicationContext has been set for this LiveBeansView.
+	 *
 	 * @return the set of ApplicationContexts
 	 */
 	protected Set<ConfigurableApplicationContext> findApplicationContexts() {
@@ -157,18 +153,18 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 	 * attribute with nested bean description objects. Each bean object contains a
 	 * bean, scope, type and resource attribute, as well as a dependencies attribute
 	 * with a nested array of bean names that the present bean depends on.
+	 *
 	 * @param contexts the set of ApplicationContexts
 	 * @return the JSON document
 	 */
 	protected String generateJson(Set<ConfigurableApplicationContext> contexts) {
 		StringBuilder result = new StringBuilder("[\n");
-		for (Iterator<ConfigurableApplicationContext> it = contexts.iterator(); it.hasNext();) {
+		for (Iterator<ConfigurableApplicationContext> it = contexts.iterator(); it.hasNext(); ) {
 			ConfigurableApplicationContext context = it.next();
 			result.append("{\n\"context\": \"").append(context.getId()).append("\",\n");
 			if (context.getParent() != null) {
 				result.append("\"parent\": \"").append(context.getParent().getId()).append("\",\n");
-			}
-			else {
+			} else {
 				result.append("\"parent\": null,\n");
 			}
 			result.append("\"beans\": [\n");
@@ -193,8 +189,7 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 					Class<?> beanType = bf.getType(beanName);
 					if (beanType != null) {
 						result.append("\"type\": \"").append(beanType.getName()).append("\",\n");
-					}
-					else {
+					} else {
 						result.append("\"type\": null,\n");
 					}
 					result.append("\"resource\": \"").append(getEscapedResourceDescription(bd)).append("\",\n");
@@ -217,9 +212,10 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 	/**
 	 * Determine whether the specified bean is eligible for inclusion in the
 	 * LiveBeansView JSON snapshot.
+	 *
 	 * @param beanName the name of the bean
-	 * @param bd the corresponding bean definition
-	 * @param bf the containing bean factory
+	 * @param bd       the corresponding bean definition
+	 * @param bf       the containing bean factory
 	 * @return {@code true} if the bean is to be included; {@code false} otherwise
 	 */
 	protected boolean isBeanEligible(String beanName, BeanDefinition bd, ConfigurableBeanFactory bf) {
@@ -230,6 +226,7 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 	/**
 	 * Determine a resource description for the given bean definition and
 	 * apply basic JSON escaping (backslashes, double quotes) to it.
+	 *
 	 * @param bd the bean definition to build the resource description for
 	 * @return the JSON-escaped resource description
 	 */
@@ -244,11 +241,9 @@ public class LiveBeansView implements LiveBeansViewMBean, ApplicationContextAwar
 			char character = resourceDescription.charAt(i);
 			if (character == '\\') {
 				result.append('/');
-			}
-			else if (character == '"') {
+			} else if (character == '"') {
 				result.append("\\").append('"');
-			}
-			else {
+			} else {
 				result.append(character);
 			}
 		}

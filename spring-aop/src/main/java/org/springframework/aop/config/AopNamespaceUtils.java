@@ -64,16 +64,14 @@ public abstract class AopNamespaceUtils {
 
 	public static void registerAspectJAutoProxyCreatorIfNecessary(ParserContext parserContext, Element sourceElement) {
 		// 往BeanFactory注册AspectJAwareAdvisorAutoProxyCreator的bd
-		BeanDefinition beanDefinition =
-				AopConfigUtils.registerAspectJAutoProxyCreatorIfNecessary(parserContext.getRegistry(), parserContext.extractSource(sourceElement));
+		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAutoProxyCreatorIfNecessary(parserContext.getRegistry(), parserContext.extractSource(sourceElement));
 		// 设置属性
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(ParserContext parserContext, Element sourceElement) {
-		BeanDefinition beanDefinition =
-				AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext.getRegistry(), parserContext.extractSource(sourceElement));
+		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext.getRegistry(), parserContext.extractSource(sourceElement));
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}

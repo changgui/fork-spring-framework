@@ -9,16 +9,17 @@ import org.springframework.beans.factory.FactoryBean;
  * @date 2021/4/24
  */
 
-public class MyFactoryBean implements FactoryBean<String> {
+public class MyFactoryBean implements FactoryBean<MyFactoryBeanObject> {
 
 	@Override
-	public String getObject() throws Exception {
-		return new String("我就是自定义的FactoryBean");
+	public MyFactoryBeanObject getObject() throws Exception {
+		// 注意此MyFactoryBeanObject对象是不参与spring bean的生命周期的，即便是实现了BPP的接口也不会调用
+		return new MyFactoryBeanObject();
 	}
 
 	@Override
 	public Class<?> getObjectType() {
-		return String.class;
+		return MyFactoryBeanObject.class;
 	}
 
 	@Override

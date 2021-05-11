@@ -275,9 +275,7 @@ final class PostProcessorRegistrationDelegate {
 	/**
 	 * Invoke the given BeanDefinitionRegistryPostProcessor beans.
 	 */
-	private static void invokeBeanDefinitionRegistryPostProcessors(
-			Collection<? extends BeanDefinitionRegistryPostProcessor> postProcessors, BeanDefinitionRegistry registry) {
-
+	private static void invokeBeanDefinitionRegistryPostProcessors(Collection<? extends BeanDefinitionRegistryPostProcessor> postProcessors, BeanDefinitionRegistry registry) {
 		for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors) {
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 		}
@@ -286,9 +284,7 @@ final class PostProcessorRegistrationDelegate {
 	/**
 	 * Invoke the given BeanFactoryPostProcessor beans.
 	 */
-	private static void invokeBeanFactoryPostProcessors(
-			Collection<? extends BeanFactoryPostProcessor> postProcessors, ConfigurableListableBeanFactory beanFactory) {
-
+	private static void invokeBeanFactoryPostProcessors(Collection<? extends BeanFactoryPostProcessor> postProcessors, ConfigurableListableBeanFactory beanFactory) {
 		for (BeanFactoryPostProcessor postProcessor : postProcessors) {
 			postProcessor.postProcessBeanFactory(beanFactory);
 		}
@@ -297,9 +293,7 @@ final class PostProcessorRegistrationDelegate {
 	/**
 	 * Register the given BeanPostProcessor beans.
 	 */
-	private static void registerBeanPostProcessors(
-			ConfigurableListableBeanFactory beanFactory, List<BeanPostProcessor> postProcessors) {
-
+	private static void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory, List<BeanPostProcessor> postProcessors) {
 		for (BeanPostProcessor postProcessor : postProcessors) {
 			beanFactory.addBeanPostProcessor(postProcessor);
 		}

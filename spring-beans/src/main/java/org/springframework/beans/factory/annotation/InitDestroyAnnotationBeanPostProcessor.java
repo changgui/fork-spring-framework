@@ -69,8 +69,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2.5
  */
 @SuppressWarnings("serial")
-public class InitDestroyAnnotationBeanPostProcessor
-		implements DestructionAwareBeanPostProcessor, MergedBeanDefinitionPostProcessor, PriorityOrdered, Serializable {
+public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareBeanPostProcessor, MergedBeanDefinitionPostProcessor, PriorityOrdered, Serializable {
 
 	private final transient LifecycleMetadata emptyLifecycleMetadata =
 			new LifecycleMetadata(Object.class, Collections.emptyList(), Collections.emptyList()) {
